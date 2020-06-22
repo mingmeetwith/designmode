@@ -1,0 +1,94 @@
+1.前言：在之前的开发中，做过物流信息节点的一个业务。分为了很多个节点信息，列举如下：
+
+订单作废
+待处理
+预处理成功
+运单录入成功
+仓库已收件
+称重完成
+已付款
+已打包
+已出关
+订单完成
+从最开始的状态，到最后一个状态。假如按照顺序排序的话，你要是订单录入成功，那么你必须是已经存在了待处理和预处理成功的状态。
+
+如果用0-10来定义十个状态的话，那么我们应该怎么去判断我当前的状态是否包含有上一个状态呢？
+
+根据讨论：位运算是一个不错的选择。
+
+2.下面我将用例子说明，位运算在项目中的使用
+
+①关于爱好的例子
+
+eg：现在我有一个爱好的需求，这些爱好有
+足球  羽毛球  乒乓球  篮球  游泳
+如果按照整数的形式去定义，那就有无数多种情况，毕竟可以两两组合嘛。
+但是如果用位运算去做的话，那么就可以直接表示为：
+假如喜欢足球的话，那么在足球定义的那一位上就标记成1，否则位0
+那么 0 0 1 1 1则表示不喜欢足球和羽毛球，喜欢乒乓球和篮球还有游泳的。
+②检查是否存在该爱好
+
+//使用与运算去判断是否存在该爱好
+public Boolean isStatu(Integer status){
+	return (this.status & status)>0;
+}
+eg:
+   喜欢足球的状态是：1 0 0 0 0
+   小明的喜好：     0 1 0 1 0
+   与计算的结果为0 0 0 0 0，返回位false，所以小明不存在喜好足球的状态
+
+③添加某种爱好：
+
+//在原来的基础上添加某种爱好
+public void addStatu(Integer status){
+	this.status=this.status | status;
+}
+eg:
+    喜欢足球：   1 0 0 0 0
+    小明的喜好： 0 1 0 1 0
+    或运算之后： 1 1 0 1 0
+④移除某种爱好：
+
+//移除某种爱好
+public void remove(Integer status){
+	this.status=this.status & ~status;
+}
+eg:
+    （传入）喜好足球 ： 1 0 0 0 0
+    小明的喜好：       1 0 1 0 1
+    足球取~ ：         0 1 1 1 1
+    与运算：           0 0 1 0 1
+⑤注意事项：
+
+在位运算中，一位代表的数位2的n-1次方。
+
+3.下面给大家看看在项目中我们的订单实际定义是怎么样的：
+
+/**
+* 从上到下有一个顺序关系，每一个的数值都是2的n-1次方计算出来。
+*
+*/
+//订单作废
+private static final Integer Order_Invalid = 0;
+//待处理
+private static final Integer Order_Pending = 1;
+//预处理成功
+private static final Integer Order_pretreatment = 2;
+//运单录入成功
+private static final Integer Order_WaybillInsert = 4;
+//仓库已收件
+private static final Integer Order_RepertoryObtain = 8;
+//称重完成
+private static final Integer Order_Weight = 16;
+//已付款
+private static final Integer Order_Pay = 32;
+//已打包
+private static final Integer Order_Pack = 64;
+//已出关
+private static final Integer Order_Export = 128;
+//订单完成
+private static final Integer Order_Success = 256;
+ 
+————————————————
+版权声明：本文为CSDN博主「JsonXxxx」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/zaizhongjian/java/article/details/87601749
