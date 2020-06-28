@@ -10,9 +10,6 @@ import java.util.concurrent.Executors;
 
 public class CaseChapter3 {
 
-
-
-
 }
 
 class RouterServerHandler extends ChannelInboundHandlerAdapter{
